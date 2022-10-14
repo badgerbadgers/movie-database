@@ -1,7 +1,7 @@
 import { all } from "redux-saga/effects"
-import { movieSagas } from "./movieSagas"
+import { moviesSagas } from "./movieSagas"
 
 export default function* rootSaga() {
   //all is run when running multiple sagas
-  yield all([...movieSagas])
+  yield all([...moviesSagas])
 }

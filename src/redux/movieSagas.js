@@ -1,11 +1,28 @@
 import { takeLatest, put, fork, call } from "redux-saga/effects"
-import { fetchMovies } from "./api"
-import { getMovies } from "./feature/movieSlice"
+import { fetchMovie, fetchMovies } from "./api"
+import { getMovie, getMovies, setMovie, setMovies } from "./feature/movieSlice"
 
-function* onLoadMoviesAsync(payload) {
+function* onLoadMoviesAsync({ payload }) {
   try {
     const movieName = payload
+    console.log(movieName)
     const response = yield call(fetchMovies, movieName)
+    if (response.status === 200) {
+      yield put(setMovies({ ...response.data }))
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+function* onLoadMovieAsync({ payload }) {
+  try {
+    const movieId = payload
+    console.log(movieId)
+    const response = yield call(fetchMovie, movieId)
+    if (response.status === 200) {
+      yield put(setMovie({ ...response.data }))
+    }
   } catch (error) {
     console.log(error)
   }
@@ -14,5 +31,8 @@ function* onLoadMoviesAsync(payload) {
 function* onLoadMovies() {
   yield takeLatest(getMovies.type, onLoadMoviesAsync)
 }
+function* onLoadMovie() {
+  yield takeLatest(getMovie.type, onLoadMovieAsync)
+}
 
-export const movieSagas = [fork(onLoadMovies)]
+export const moviesSagas = [fork(onLoadMovies), fork(onLoadMovie)]
